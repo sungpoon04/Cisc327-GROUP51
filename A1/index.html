@@ -3,51 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Welcome to my private GitHub repository">
-    <meta name="author" content="Your Name">
-    <title>Welcome to CISC 327-GROUP51's private repository!</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            text-align: center;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            color: #333;
-            font-size: 2.5em;
-        }
-        p {
-            color: #666;
-            font-size: 1.2em;
-            margin: 20px 0;
-        }
-        a {
-            text-decoration: none;
-            color: #1a73e8;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Input Form</title>
 </head>
 <body>
-    <div class="container">
-        <h1>GROUP 51</h1>
-        <p>This private repository is dedicated to group 51 which includes Sungmoon Choi, Hassan Hamid, Steven Guan</p>
-    </div>
+    <h1>Hello, welcome to CISC 327 Group 51's repository!</h1>
+    <form id="inputForm">
+        <input type="text" id="userInput" name="user_input" placeholder="Enter something" required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            const userInput = document.getElementById('userInput').value;
+            document.getElementById('result').innerHTML = `<h2>You entered: ${userInput}</h2>`;
+        });
+    </script>
 </body>
 </html>
