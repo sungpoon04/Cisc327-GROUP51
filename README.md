@@ -1,4 +1,4 @@
 ## Cisc327 Group 51
-Sungmoon Choi
-Hassan Hamid
-Steven Guan
+Members: Sungmoon Choi, Hassan Hamid, Steven Guan
+
+Check the matching assignment number folder to see the submisison for each assignment
