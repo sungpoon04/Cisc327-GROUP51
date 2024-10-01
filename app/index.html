@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Form</title>
+</head>
+<body>
+    <h1>Hello, welcome to CISC 327 Group 51's repository!</h1>
+    <form id="inputForm">
+        <input type="text" id="userInput" name="user_input" placeholder="Enter something" required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            const userInput = document.getElementById('userInput').value;
+            document.getElementById('result').innerHTML = `<h2>You entered: ${userInput}</h2>`;
+        });
+    </script>
+</body>
+</html>
