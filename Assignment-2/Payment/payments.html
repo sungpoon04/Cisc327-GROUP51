@@ -11,10 +11,23 @@
     <div class="payment-container">
         <form action="/process_payment" method="POST">
             <label for="email">Email</label>
+			<br>
+			
             <input type="email" id="email" name="email" placeholder="Email" required>
 			<br>
 			
             <label for="card_number">Card information</label>
+			<br>
+			
+            <select id="method" name="method" required>
+                <option value="">Select Payment Method</option>
+                <option value="debit">Debit</option>
+                <option value="credit">Credit</option>
+                <option value="visa">Visa</option>
+                <option value="master">Mastercard</option>
+			</select>
+			<br>
+			
             <input type="tel" inputmode ="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19" id="card_number" name="card_number" placeholder="xxxx xxxx xxxx xxxx" required>
 			<br>
             
@@ -40,6 +53,7 @@
 
             <button type="submit">Pay CAD $1244.13</button>
 			<br>
+			
             <button type="button" class="cancel">Cancel</button>
 			<br>
         </form>
