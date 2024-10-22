@@ -32,10 +32,10 @@
 			<br>
             
 
-			<input type="text" id="expiration" name="expiration" placeholder="MM/YY" required>
+			<input type="text" id="expiration" name="expiration" maxlength="4" placeholder="MMYY" required>
 			<br>
 			
-			<input type="text" id="cvc" name="cvc" placeholder="CVC" required>
+			<input type="text" id="cvc" name="cvc" maxlength="3" placeholder="CVC" required>
 			<br>
 
 
@@ -58,5 +58,15 @@
 			<br>
         </form>
     </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-message">
+    {% for category, message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 </body>
 </html>
