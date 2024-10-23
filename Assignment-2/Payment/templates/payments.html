@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <form action="/process_payment" method="POST">
+            <label for="email">Email</label>
+			<br>
+			
+            <input type="email" id="email" name="email" placeholder="Email" required>
+			<br>
+			
+            <label for="card_number">Card information</label>
+			<br>
+			
+            <select id="method" name="method" required>
+                <option value="">Select Payment Method</option>
+                <option value="debit">Debit</option>
+                <option value="credit">Credit</option>
+                <option value="visa">Visa</option>
+                <option value="master">Mastercard</option>
+			</select>
+			<br>
+			
+            <input type="tel" inputmode ="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19" id="card_number" name="card_number" placeholder="xxxx xxxx xxxx xxxx" required>
+			<br>
+            
+
+			<input type="text" id="expiration" name="expiration" maxlength="4" placeholder="MMYY" required>
+			<br>
+			
+			<input type="text" id="cvc" name="cvc" maxlength="3" placeholder="CVC" required>
+			<br>
+
+
+            <label for="name_on_card">Name on card</label>
+            <input type="text" id="name_on_card" name="name_on_card" placeholder="Name" required>
+			<br>
+
+            <label for="country">Country or region</label>
+            <select id="country" name="country" required>
+                <option value="">Country</option>
+                <option value="US">United States</option>
+                <option value="CA">Canada</option>
+            </select>
+			<br>
+
+            <button type="submit">Pay CAD $1244.13</button>
+			<br>
+			
+            <button type="button" class="cancel">Cancel</button>
+			<br>
+        </form>
+    </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-message">
+    {% for category, message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+</body>
+</html>
