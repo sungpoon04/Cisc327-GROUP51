@@ -8,6 +8,7 @@ users = {
     "user@example.com": "password123",
     "hassan@gmail.com": "password123",
     "steven@gmail.com": "password123",
+    "sungmoon@gmail.com": "password123",
     "anwar@gmail.com": "password123"
 }
 
