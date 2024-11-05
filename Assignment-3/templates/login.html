@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadata for character encoding and viewport settings -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title -->
+    <title>Flight Booker Login</title>
+    <!-- External font link -->
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic body styling to apply font, background gradient, and center content */
+        body {
+            font-family: 'Inria Serif', serif;
+            background: linear-gradient(to bottom, #a9c9ff 0%, #ffbbec 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        /* Navigation bar styling */
+        nav {
+            width: 100%;
+            position: fixed; /* Fixed at the top of the page */
+            top: 0;
+            background: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between; /* Align items to left and right */
+            align-items: center;
+            z-index: 100; /* Ensures the nav stays above other content */
+        }
+
+        /* Styling for navigation links */
+        nav a {
+            text-decoration: none;
+            color: #4a90e2;
+            padding: 0 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease; /* Smooth color transition on hover */
+        }
+
+        /* Hover effect for nav links */
+        nav a:hover {
+            color: #357abd;
+        }
+
+        /* Styling for logo image in the navigation bar */
+        .logo-img img {
+            width: 50px;
+            height: auto;
+            padding-left: 1rem;
+        }
+
+        /* Styling for logo text in the navigation bar */
+        .logo-text {
+            color: #333;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-style: italic;
+            padding: 0 1rem;
+        }
+
+        /* Container for alignment of nav items */
+        .nav-a {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Styling for the login form container */
+        .login-container {
+            background-color: white; /* White background for contrast */
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds shadow around the container */
+            text-align: center;
+            margin-top: 100px; /* Offsets the content to avoid overlap with fixed nav */
+        }
+
+        /* Input field styling */
+        input {
+            width: 100%;
+            padding: 0.5em;
+            margin: 0.5em 0;
+            border-radius: 5px;
+            border: 1px solid #ccc; /* Light gray border for input fields */
+        }
+
+        /* Button styling */
+        button {
+            padding: 0.5em 2em;
+            background-color: #4a90e2; /* Blue background */
+            color: white; /* White text for contrast */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer; /* Pointer cursor to indicate interactivity */
+        }
+
+        /* Hover effect for button */
+        button:hover {
+            background-color: #357abd;
+        }
+
+        /* Link styling for 'Forgot password' and 'Create account' */
+        a {
+            color: #357abd;
+        }
+
+        /* Styling for flash message container */
+        .flash-message {
+            color: red; /* Red color for error or flash messages */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <!-- Logo image in the navigation bar -->
+        <div class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Flight Booker Logo">
+        </div>
+        <!-- Logo text in the navigation bar -->
+        <div class="logo-text">FLIGHT BOOKER</div>
+        <!-- Placeholder for additional nav items if needed -->
+        <div class="nav-a"></div>
+    </nav>
+
+    <!-- Login Form Container -->
+    <div class="login-container">
+        <!-- Title for the login form -->
+        <p style="font-size: 35px;">LOGIN TO FLIGHT BOOKER</p>
+        <!-- Login form with email and password input fields -->
+        <form action="{{ url_for('login') }}" method="POST">
+            <div>
+                <input type="email" name="email" placeholder="Email address" required>
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <!-- Submit button for the login form -->
+            <button type="submit">Sign in</button>
+        </form>
+        <!-- Links for 'Forgot password' and 'Create account' -->
+        <p><a href="/forgot-password">Forgot your password?</a> | <a href="/register">Create an account</a></p>
+
+        <!-- Display flash messages (for example, invalid login attempts) -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-message">
+                    <!-- Loop through and display each message -->
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
