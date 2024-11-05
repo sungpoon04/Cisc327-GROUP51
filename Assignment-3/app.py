@@ -39,12 +39,7 @@ def validate_payment(method, card_number, expiration, cvc, name, country):
             record[5] == country):
             return float(record[6])  # Returns balance
     return None
-
-# Root route to redirect to the registration page
-@app.route('/')
-def home():
-    return redirect(url_for('register'))
-
+    
 # Registration Steps
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -91,6 +86,11 @@ def register():
                 return render_template('register_front.html', step=3)
 
     return render_template('register_front.html', step=1)
+    
+# Root route to redirect to the registration page
+@app.route('/')
+def home():
+    return redirect(url_for('register'))
 
 # Login Route
 @app.route('/login', methods=['GET', 'POST'])
