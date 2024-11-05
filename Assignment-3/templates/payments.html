@@ -4,56 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Page</title>
-    <style>
-	body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-size: cover;
-        }
-        .payment-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 350px;
-        }
-        .payment-container input, .payment-container select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            box-sizing: border-box;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        .payment-container button {
-            width: 100%;
-            padding: 12px;
-            background-color: black;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .payment-container button.cancel {
-            background-color: #ccc;
-            margin-top: 10px;
-        }
-        .payment-container button:hover {
-            opacity: 0.9;
-        }
-        label {
-            font-weight: bold;
-            margin-bottom: 4px;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <nav>
+        <!-- The top row of the frontend -->
+        <div class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Illustration" class="logo-img">
+        </div>
+        <div class="logo-text">FLIGHT BOOKER</div>
+
+        <div class="nav-a">
+            <a href="/">Home</a>
+            <a href="/">About</a>
+            <a href="/">Contact</a>
+        </div>
+    </nav>
+	
     <div class="payment-container">
         <form action="/process_payment" method="POST">
             <label for="email">Email</label>

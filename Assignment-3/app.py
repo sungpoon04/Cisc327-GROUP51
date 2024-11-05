@@ -101,6 +101,7 @@ def login():
         
         if email in users and users[email] == password:
             flash("Welcome to Flight Booker!", "success")
+            session['logged_in'] = True
             return redirect(url_for('payment_form'))
         else:
             flash("Invalid email or password!", "error")
@@ -121,6 +122,27 @@ def forgot_password():
             return redirect(url_for('forgot_password'))
     
     return render_template('forgot_password.html')
+    
+# Selection Route
+@app.route('/selection', methods=['GET', 'POST'])
+def selection():
+    #if not session.get('logged_in'):
+     #   flash("Please log in first to select a flight," "error")
+     #   return redirect(url_for('login'))
+    
+    flights = [
+        {"departure": "07:23", "arrival": "06:35", "stops": "1 Stop, 18h 12m", "economy_price": "CAD 1,251", "business_price": "CAD 10,268"},
+        {"departure": "15:09", "arrival": "16:45", "stops": "1 Stop, 18h 36m", "economy_price": "CAD 1,193", "business_price": "CAD 13,267"},
+        {"departure": "13:25", "arrival": "16:45", "stops": "1 Stop, 20h 21m", "economy_price": "CAD 1,236", "business_price": "CAD 13,267"},
+        {"departure": "13:29", "arrival": "06:41", "stops": "1 Stop, 17h 12m", "economy_price": "CAD 1,198", "business_price": "CAD 10,258"}
+    ]
+
+    if request.method == 'POST':
+        selected_flight = request.form.get('flight')
+        session['selected_flight'] = flights[int(selected_flight)]
+        return redirect(url_for('confirmed'))
+
+    return render_template('selection.html', flights=flights)
 
 # Payment Form Route
 @app.route('/payment', methods=['GET'])
@@ -152,6 +174,16 @@ def process_payment():
     else:
         flash("Invalid payment details! Please try again.", 'error')
         return redirect(url_for('payment_form'))
+
+# Confirmation Route
+@app.route('/confirmed', methods=['GET'])
+def confirmed():
+    selected_flight = session.get('selected_flight')
+    #if not selected_flight:
+    #    flash("No flight selected. Please select a flight.", "error")
+    #    return redirect(url_for('selection'))
+
+    return render_template('confirmed.html', flight=selected_flight)
 
 # Start the server
 if __name__ == '__main__':

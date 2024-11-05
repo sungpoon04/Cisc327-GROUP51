@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Booker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <!-- The top row of the frontend -->
+        <div class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Illustration" class="logo-img">
+        </div>
+        <div class="logo-text">FLIGHT BOOKER</div>
+
+        <div class="nav-a">
+            <a href="/">Home</a>
+            <a href="/">About</a>
+            <a href="/">Contact</a>
+        </div>
+    </nav>
+
+    <div class="date-selector">
+        <span>Mon, 23 Dec <br> CAD 1,063</span>
+        <span>Tue, 24 Dec <br> CAD 1,183</span>
+        <span class="selected">Wed, 25 Dec <br> CAD 1,474</span>
+        <span>Thu, 26 Dec <br> CAD 946</span>
+        <span>Fri, 27 Dec <br> CAD 1,211</span>
+        <span>Sat, 28 Dec <br> CAD 1,211</span>
+        <span>Sun, 29 Dec <br> CAD 1,183</span>
+    </div>
+
+    <div class="flight-options">
+        <div class="flight">
+            <p>07:23 → 06:35 <span>1 Stop, 18h 12m</span></p>
+            <p><button>Flight Details</button></p>
+            <div class="class-options">
+                <div>Economy <br> CAD 1,563 <button>Select</button></div>
+                <div>Business <br> CAD 10,268 <button>Select</button></div>
+            </div>
+        </div>
+        <div class="flight">
+            <p>15:09 → 16:45 <span>1 Stop, 18h 36m</span></p>
+            <p><button>Flight Details</button></p>
+            <div class="class-options">
+                <div>Economy <br> CAD 1,474 <button>Select</button></div>
+                <div>Business <br> CAD 13,267 <button>Select</button></div>
+            </div>
+        </div>
+        <!-- Add more flights as needed -->
+    </div>
+</body>
+</html>
