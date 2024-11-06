@@ -151,6 +151,12 @@ def process_payment():
     else:
         flash("Invalid payment details! Please try again.", 'error')
     return redirect(url_for('payment_form'))
+    
+@app.route('/cancel_payment', methods=['GET'])
+def cancel_payment():
+    # Redirect to the login page
+    return redirect(url_for('login'))
+    
 '''
 # Confirmation Route
 @app.route('/confirmed', methods=['GET'])

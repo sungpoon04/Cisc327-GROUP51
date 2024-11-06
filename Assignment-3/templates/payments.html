@@ -45,6 +45,7 @@
 			<br>
             
 
+
 			<input type="text" id="expiration" name="expiration" maxlength="4" placeholder="MMYY" required>
 			<br>
 			
@@ -66,19 +67,21 @@
 
             <button type="submit">Pay CAD 1244.13</button>
         </form>
-		<form action="/cancel_payment" method="POST">
+		<!-- Cancel button form to redirect to the login page -->
+		<form action="/cancel_payment" method="GET">
             <button type="submit" class="cancel">Cancel</button>
 		</form>
     </div>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flash-message">
-    {% for category, message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-message">
+        {% for category, message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
 
 </body>
 </html>
