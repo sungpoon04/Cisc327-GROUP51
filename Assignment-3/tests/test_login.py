@@ -33,7 +33,7 @@ class FlaskTestCase(unittest.TestCase):
         response = self.app.post('/login', data=dict(email="unique_user@example.com", password="password123"), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         # Check for an element unique to the payment page to confirm redirection
-        self.assertIn(b'Pay CAD $1244.13', response.data)  # Ensures the payment page is displayed
+        self.assertIn(b'Name on card', response.data)  # Ensures the payment page is displayed
 
     # Test invalid login (POST request)
     def test_invalid_login(self):
