@@ -30,50 +30,48 @@ def validate_payment(method, card_number, expiration, cvc, name, country):
             return float(record[6])  # Returns balance
     return None
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET','POST'])
 def register():
-    if request.method == 'POST':
-        # Retrieve form data
-        email = request.form.get('email')
-        phone = request.form.get('phone')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirmPassword')
-        first_name = request.form.get('first-name')
-        last_name = request.form.get('last-name')
-        home_address = request.form.get('home-address')
-        user_code = request.form.get('user-code')
+    # Retrieve form data
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    password = request.form.get('password')
+    confirm_password = request.form.get('confirmPassword')
+    first_name = request.form.get('first-name')
+    last_name = request.form.get('last-name')
+    home_address = request.form.get('home-address')
+    user_code = request.form.get('user-code')
+    terms = request.form.get('termsBox')
 
-        # Validate the password match
-        if not email or password != confirm_password:
-            flash("Passwords do not match or email is missing.", "register_error")
-            return redirect(url_for('register'))
+    # Check if passwords match criteria
+    if password != confirm_password:
+        return 'Passwords do not match or are invalid.', 400
 
-        if not first_name or not last_name or not home_address:
-            flash("Please complete all fields in Step 2.", "register_error")
-            return redirect(url_for('register'))
+    # Check for missing essential components
+    if (not first_name) or (not last_name) or (not home_address) or (not email):
+        return 'Missing essential information', 400
+    
+    # Check if terms and conditions were accepted
+    if not terms:
+        return 'Terms and Conditions not accepted', 400
 
-        # Check if user already exists
-        if user_exists(email, phone):
-            flash("An account with this email or phone number already exists.", "register_error")
-            return redirect(url_for('register'))
+    # Check if verification code is correct (assuming the frontend generated code is passed correctly)
+    # Retrieve code from cookies
+    generated_code = request.cookies.get('verification_code') 
+    if user_code != generated_code:
+        return 'Incorrect verification code.', 400
 
-        # Check the verification code
-        generated_code = request.cookies.get('verification_code')
-        if user_code != generated_code:
-            flash("Incorrect verification code.", "register_error")
-            return redirect(url_for('register'))
+    # Insert user into the database
+    insert_user(email, phone, password, first_name, last_name, home_address)
 
-        # Insert the user into the database
-        insert_user(email, phone, password, first_name, last_name, home_address)
-        flash("Registration successful!", "success")
-        return redirect(url_for('login'))
+    # Redirect to the login page after successful registration
+    return redirect(url_for('login'))  # Redirect to the login route
 
-    # Generate a verification code and store it in cookies
-    verification_code = str(random.randint(100000, 999999))
-    resp = make_response(render_template('register_front.html', step=1))
-    resp.set_cookie('verification_code', verification_code)
-    flash("Verification code sent.", "info")
-    return resp
+
+# Root route to redirect to the registration page
+@app.route('/')
+def home():
+    return render_template('register_front.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -81,25 +79,19 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-
         # Retrieve the user from the database
         user = get_user_by_email(email)
 
         # Check if user exists and passwords match
         if user and user[1] == password:  # user[1] contains the password
-            flash("Welcome to Flight Booker!", "success")
+            flash("Welcome to Flight Booker!", "login_success")
             session['logged_in'] = True
             return redirect(url_for('payment_form'))
         else:
-            flash("Invalid email or password!", "error")
+            flash("Invalid email or password!", "login_error")
             return redirect(url_for('login'))
 
     return render_template('login.html')
-
-# Root route to redirect to the registration page
-@app.route('/')
-def home():
-    return redirect(url_for('login'))
 
 # Forgot Password Route
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -115,7 +107,6 @@ def forgot_password():
             return redirect(url_for('forgot_password'))
     
     return render_template('forgot_password.html')
-
 '''
 # Flight Selection Route
 @app.route('/selection', methods=['GET', 'POST'])
@@ -134,7 +125,6 @@ def selection():
 
     return render_template('selection.html', flights=flights)
 '''
-
 # Payment Form Route
 @app.route('/payment', methods=['GET'])
 def payment_form():
@@ -161,7 +151,6 @@ def process_payment():
     else:
         flash("Invalid payment details! Please try again.", 'error')
     return redirect(url_for('payment_form'))
-
 '''
 # Confirmation Route
 @app.route('/confirmed', methods=['GET'])
@@ -169,6 +158,5 @@ def confirmed():
     selected_flight = session.get('selected_flight')
     return render_template('confirmed.html', flight=selected_flight)
 '''
-
 if __name__ == '__main__':
     app.run(debug=True)
