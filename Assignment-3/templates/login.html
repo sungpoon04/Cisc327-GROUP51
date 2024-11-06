@@ -151,15 +151,17 @@
         <p><a href="/forgot-password">Forgot your password?</a> | <a href="/register">Create an account</a></p>
 
         <!-- Display flash messages (for example, invalid login attempts) -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="flash-message">
-                    <!-- Loop through and display each message -->
-                    {% for message in messages %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <ul class="flash-message">
+                <!-- Loop through and display only error messages relevant to login -->
+                {% for category, message in messages %}
+                    {% if category == 'error' or category == "info" %}
                         <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% endwith %}
     </div>
 </body>
