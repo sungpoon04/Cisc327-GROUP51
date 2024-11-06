@@ -3,7 +3,6 @@
 }
 
 body {
-    font-family: Tahoma, sans-serif;
     background: linear-gradient(to bottom, #D7B79D 0%, #A1C6DC 100%);
     margin: 0;
 }
@@ -54,6 +53,7 @@ button {
     cursor: pointer;
 
 }
+
 button:hover {
     background-color: #8bb3de;
     color:#000;
@@ -71,8 +71,40 @@ button:hover {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     margin-bottom: 1.5rem;
+}
+
+.container-log{
+    max-width: 900px;
+    margin: auto;
+    background-color: #EFEFEF;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 14%;
+    margin-right: 14%;
+    padding: 3vh;
+    text-align: center;
+}
+
+.container-log a:hover{
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.container-top{
+    max-width: 900px;
+    margin: auto;
+    background-color: #EFEFEF;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    margin-left: 14%;
+    margin-right: 14%;
+    padding: 3vh 2vh;
+    text-align: center;
 }
 
 h2 {
@@ -129,6 +161,17 @@ input[type="text"], input[type="email"], input[type="password"] {
 .error-verify {
     color: red;
     display: none;
+}
+
+.clickable-text {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.clickable-text:hover {
+    color: #0056b3;
+    text-decoration: none;
 }
 
 /* style for selection.html and confirmed.html */
