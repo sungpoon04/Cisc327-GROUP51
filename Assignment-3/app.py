@@ -1,19 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
 import random
+from database_op import insert_user, get_user_by_email, user_exists  # Assuming these functions are in database_op.py
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-# Mock user database
-users = {
-    "user@example.com": "password123",
-    "hassan@gmail.com": "password123",
-    "steven@gmail.com": "password123",
-    "sungmoon@gmail.com": "password123",
-    "anwar@gmail.com": "password123"
-}
-
-# Mock payment database from file
+# Read the payment database
 def read_database(file_name):
     data_list = []
     try:
@@ -23,7 +15,6 @@ def read_database(file_name):
                 data_list.append(line_items)
     except FileNotFoundError:
         print("The file was not found.")
-    
     return data_list
 
 payment_data = read_database("database.txt")
@@ -39,74 +30,76 @@ def validate_payment(method, card_number, expiration, cvc, name, country):
             record[5] == country):
             return float(record[6])  # Returns balance
     return None
-    
-# Registration Steps
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        step = request.form.get('step')
+        # Retrieve form data
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirmPassword')
+        first_name = request.form.get('first-name')
+        last_name = request.form.get('last-name')
+        home_address = request.form.get('home-address')
+        user_code = request.form.get('user-code')
 
-        if step == '1':
-            email = request.form.get('email')
-            password = request.form.get('password')
-            confirm_password = request.form.get('confirmPassword')
-            
-            if not email or (password != confirm_password):
-                flash("Passwords do not match or email is missing.", "error")
-                return redirect(url_for('register'))
-            
-            # Store in session for multi-step process
-            session['email'] = email
-            session['password'] = password
-            return render_template('register_front.html', step=2)
-        
-        elif step == '2':
-            first_name = request.form.get('first-name')
-            last_name = request.form.get('last-name')
-            address = request.form.get('home-address')
-            
-            if not first_name or not last_name or not address:
-                flash("Please complete all fields in Step 2.", "error")
-                return redirect(url_for('register'))
-            
-            session['first_name'] = first_name
-            session['last_name'] = last_name
-            session['address'] = address
-            session['verification_code'] = str(random.randint(100000, 999999))
-            flash("Verification code sent.", "info")
-            return render_template('register_front.html', step=3)
-        
-        elif step == '3':
-            user_code = request.form.get('user-code')
-            if user_code == session.get('verification_code'):
-                flash("Registration successful!", "success")
-                return redirect(url_for('login'))
-            else:
-                flash("Invalid verification code.", "error")
-                return render_template('register_front.html', step=3)
+        # Validate the password match
+        if not email or password != confirm_password:
+            flash("Passwords do not match or email is missing.", "register_error")
+            return redirect(url_for('register'))
 
-    return render_template('register_front.html', step=1)
-    
+        if not first_name or not last_name or not home_address:
+            flash("Please complete all fields in Step 2.", "register_error")
+            return redirect(url_for('register'))
+
+        # Check if user already exists
+        if user_exists(email, phone):
+            flash("An account with this email or phone number already exists.", "register_error")
+            return redirect(url_for('register'))
+
+        # Check the verification code
+        generated_code = request.cookies.get('verification_code')
+        if user_code != generated_code:
+            flash("Incorrect verification code.", "register_error")
+            return redirect(url_for('register'))
+
+        # Insert the user into the database
+        insert_user(email, phone, password, first_name, last_name, home_address)
+        flash("Registration successful!", "success")
+        return redirect(url_for('login'))
+
+    # Generate a verification code and store it in cookies
+    verification_code = str(random.randint(100000, 999999))
+    resp = make_response(render_template('register_front.html', step=1))
+    resp.set_cookie('verification_code', verification_code)
+    flash("Verification code sent.", "info")
+    return resp
+
 # Root route to redirect to the registration page
 @app.route('/')
 def home():
     return redirect(url_for('register'))
 
-# Login Route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        
-        if email in users and users[email] == password:
+
+
+        # Retrieve the user from the database
+        user = get_user_by_email(email)
+
+        # Check if user exists and passwords match
+        if user and user[1] == password:  # user[1] contains the password
             flash("Welcome to Flight Booker!", "success")
             session['logged_in'] = True
             return redirect(url_for('payment_form'))
         else:
             flash("Invalid email or password!", "error")
             return redirect(url_for('login'))
-    
+
     return render_template('login.html')
 
 # Forgot Password Route
@@ -114,7 +107,8 @@ def login():
 def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email')
-        if email in users:
+        user = get_user_by_email(email)
+        if user:
             flash(f"Instructions to reset your password have been sent to {email}.", "info")
             return redirect(url_for('login'))
         else:
@@ -122,14 +116,10 @@ def forgot_password():
             return redirect(url_for('forgot_password'))
     
     return render_template('forgot_password.html')
-    
-# Selection Route
+
+# Flight Selection Route
 @app.route('/selection', methods=['GET', 'POST'])
 def selection():
-    #if not session.get('logged_in'):
-     #   flash("Please log in first to select a flight," "error")
-     #   return redirect(url_for('login'))
-    
     flights = [
         {"departure": "07:23", "arrival": "06:35", "stops": "1 Stop, 18h 12m", "economy_price": "CAD 1,251", "business_price": "CAD 10,268"},
         {"departure": "15:09", "arrival": "16:45", "stops": "1 Stop, 18h 36m", "economy_price": "CAD 1,193", "business_price": "CAD 13,267"},
@@ -161,30 +151,21 @@ def process_payment():
     country = request.form.get('country')
     amount_due = 1244.13
 
-    # Validate payment details
     balance = validate_payment(method, card_number, expiration, cvc, name_on_card, country)
-
-    if balance is not None:
-        if balance >= amount_due:
-            flash(f"Payment of CAD ${amount_due} successful! Remaining balance: CAD ${balance - amount_due}.", 'success')
-            return redirect(url_for('payment_form'))
-        else:
-            flash(f"Insufficient funds! Available balance: CAD ${balance}.", 'error')
-            return redirect(url_for('payment_form'))
+    if balance is not None and balance >= amount_due:
+        flash(f"Payment of CAD ${amount_due} successful! Remaining balance: CAD ${balance - amount_due}.", 'success')
+        return redirect(url_for('payment_form'))
+    elif balance is not None:
+        flash(f"Insufficient funds! Available balance: CAD ${balance}.", 'error')
     else:
         flash("Invalid payment details! Please try again.", 'error')
-        return redirect(url_for('payment_form'))
+    return redirect(url_for('payment_form'))
 
 # Confirmation Route
 @app.route('/confirmed', methods=['GET'])
 def confirmed():
     selected_flight = session.get('selected_flight')
-    #if not selected_flight:
-    #    flash("No flight selected. Please select a flight.", "error")
-    #    return redirect(url_for('selection'))
-
     return render_template('confirmed.html', flight=selected_flight)
 
-# Start the server
 if __name__ == '__main__':
     app.run(debug=True)
