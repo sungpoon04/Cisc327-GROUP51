@@ -156,7 +156,7 @@
             <ul class="flash-message">
                 <!-- Loop through and display only error messages relevant to login -->
                 {% for category, message in messages %}
-                    {% if category == 'error' or category == "info" %}
+                    {% if category == 'login_error' or category == "login_info" %}
                         <li>{{ message }}</li>
                     {% endif %}
                 {% endfor %}
