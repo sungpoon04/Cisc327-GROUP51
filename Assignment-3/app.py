@@ -100,10 +100,10 @@ def forgot_password():
         email = request.form.get('email')
         user = get_user_by_email(email)
         if user:
-            flash(f"Instructions to reset your password have been sent to {email}.", "info")
+            flash(f"Instructions to reset your password have been sent to {email}.", "login_info")
             return redirect(url_for('login'))
         else:
-            flash("This email is not registered in our system.", "error")
+            flash("This email is not registered in our system.", "login_error")
             return redirect(url_for('forgot_password'))
     
     return render_template('forgot_password.html')
