@@ -24,163 +24,121 @@
         </div>
     </nav>
 
+
 <!-- Class used to divide the query section and image -->
 <div class="row">
     <div class="column">
+        <div class="container-top">
+            Creating your account
+        </div>
+
         <div class="logo-reg">
             <img src="{{ url_for('static', filename='register_photo.jpg') }}" alt="Illustration" class="logo-reg">
         </div>
+
+        <!-- Link to login page LATER ON WHEN WE WORK ON BACKEND CONNECTIVITY-->
+        <div class="container-log">
+            <div class="clickable-text">
+                <a href="login">Already have an account? Log In </a>
+            </div>
+        </div>
     </div>
+
+
     <div class="column">
         <div class="container">
-            <h2>Creating your account</h2>
-        
-            <!-- Step 1: Personal Information -->
-            <div class="form-step active" id="step-1">
-                <h3>Step 1: Personal Information</h3>
+            <form id="registrationForm" action="/register" method="POST">
+                <!-- Step 1: Personal Information -->
+                <h3>Personal Information</h3>
                 <div class="form-group">
                     <label for="email">Email Address *</label>
-                    <input type="email" id="email" placeholder="Enter your email">
+                    <input type="email" id="email" name="email" required>
                 </div>
-
                 <div class="form-group">
                     <label for="phone">Phone Number *</label>
-                    <input type="text" id="phone" placeholder="Enter your phone number">
+                    <input type="text" id="phone" name="phone" required>
                 </div>
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required><br><br>
-                
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required><br><br>
-                
-                <!-- Error message pops when passwords dont match - functionality to test cases -->
-                <small id="error-message" class="error-message">Passwords do not match!</small><br><br>
-                
-                <!-- Link to login page LATER ON WHEN WE WORK ON BACKEND-->
-                <a href="/login">Already have an account? Log In</a>
-
-                <div class="button-group">
-                    <button onclick="nextPage()">Next</button>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" minlength="8" required>
                 </div>
-            </div>
-        
-            <!-- Step 2: Account Information -->
-            <div class="form-step" id="step-2">
-                <h3>Step 2: Account Information</h3>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required>
+                </div>
+    
+                <!-- Step 2: Account Information -->
+                <h3>Account Information</h3>
                 <div class="form-group">
                     <label for="first-name">First Name *</label>
-                    <input type="text" id="first-name" placeholder="Enter your first name">
+                    <input type="text" id="first-name" name="first-name" required>
                 </div>
-
                 <div class="form-group">
                     <label for="last-name">Last Name *</label>
-                    <input type="text" id="last-name" placeholder="Enter your last name">
+                    <input type="text" id="last-name" name="last-name" required>
                 </div>
-
                 <div class="form-group">
                     <label for="home-address">Home Address *</label>
-                    <input type="text" id="home-address" placeholder="Enter your home address">
+                    <input type="text" id="home-address" name="home-address" required>
                 </div>
-
-                <!-- supportRegister() is a function/feature for now, since we can't send an SMS code -->
-                <div class="button-group">
-                    <button onclick="nextPage();supportRegister()">Next</button>
-                </div>
-            </div>
-        
-            <!-- Step 3: Verification -->
-            <div class="form-step" id="step-3">
-                <h3>Step 3: Verification</h3>
+    
+                <!-- Step 3: Verification -->
+                <h3>Verification
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span onclick="generateCode()" class="clickable-text">Generate Code</span>
+                </h3>
                 <div class="form-group">
                     <label for="user-code">Verification Code *</label>
-                    <input type="text" id="user-code" placeholder="Enter verification code" required>
+                    <input type="text" id="user-code" name="user-code" required>
                 </div>
 
-                <p2>A 6 digit code has been sent to the mobile number you have provided. Please enter the code into the box to complete registration.</p2>
+                <label>
+                    <input type="checkbox" name="myCheckbox">
+                    I would like to receive promotional emails and updates.
+                </label>
+                <label>
+                    <input type="checkbox" name="myCheckbox" required>
+                    I have read and accepted the <a href="/">Terms and Conditions</a>.
+                </label>
                 
-                <!-- Error message when the verification code does not match the user entered code. -->
-                <br><br><small id="error-verify" class="error-verify">Verification code is incorrect!</small><br><br>
-                <div class="button-group">
-                    <button onclick="finishRegister()">Register</button>
-                </div>
-            </div>
+
+                <button type="submit" id="registerButton" disabled>Register</button>
+            </form>
         </div>
     </div>
   </div>
 
-<script>
+    <script>
+        let verificationCode;
 
-let currentStep = 1;
-const gen_code = generateCode();
+        function generateCode() {
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            document.cookie = `verification_code=${verificationCode}; path=/`;
+            alert("Your verification code is: " + verificationCode);
+            document.getElementById("registerButton").disabled = false;
+        }
 
-    function nextPage() {
-        // If we are in the first component, we will see if password and confirmPassword match. If not, pop up error message.
-        if (currentStep == 1){
-            // Get the password and confirm password fields
-            const password = document.getElementById('password');
-            const confirmPassword = document.getElementById('confirmPassword');
-            const errorMessage = document.getElementById('error-message');
-
-            // Check if the passwords match
-            if (password.value !== confirmPassword.value) {
-                // If they don't match, show an error message and add error styles
-                password.classList.add('error');
-                confirmPassword.classList.add('error');
-                errorMessage.style.display = 'block';
-                return false;  // Prevent form submission
+        document.getElementById("registrationForm").onsubmit = function(event) {
+            const userCode = document.getElementById("user-code").value;
+            if (userCode != verificationCode) {
+                alert("Verification code is incorrect!");
+                event.preventDefault();
             }
-        }
-        // Grabbing the next page and current page
-        const step = document.getElementById('step-' + currentStep);
-        const nextPage = document.getElementById('step-' + (currentStep + 1));
+        };
+    </script>
 
-        // Sees if all boxes in the inputs were filled
-        const inputs = step.querySelectorAll('input');
-        let valid = true;
-        inputs.forEach(input => {
-            if (!input.value) {
-                input.classList.add('error');
-                // Toggles valid to false to disallow user to go to next step.
-                valid = false;
-            } else {
-                input.classList.remove('error');
-            }
-        });
-
-        // Moves onto the next step by incrementing currentStep.
-        if (valid) {
-            step.classList.remove('active');
-            nextPage.classList.add('active');
-            currentStep++;
-        }
-    }
-
-    // Function/Feature for now, since we can't send an SMS code
-    function supportRegister() {
-        alert("Your verification code is: "+ gen_code);
-    }
-
-    // Displays the appropriate message when succesfully registered.
-    // Seeing this message indicates that you have completed registration properly.
-    function finishRegister() {
-        const userVerify = document.getElementById('user-code');
-        if (userVerify.value == gen_code) {
-            alert('You have registered successfully!');
-        }
-        else {
-            const errorVerify = document.getElementById('error-verify');
-            errorVerify.style.display = 'block';
-        }
-    }
-
-    // Generates a verification code to simulate verification
-    function generateCode() {
-        const code = Math.floor(100000 + Math.random() * 900000);
-        return code;
-    }
-
-</script>
-
+    <!-- Display flash messages on the registration page -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul class="flash-message">
+            <!-- Loop through and display only registration error messages -->
+            {% for category, message in messages %}
+                {% if category == 'register_error' and category == "register_info"%}
+                    <li>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
 </body>
 </html>
