@@ -1,23 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
 import random
+import sqlite3
 from database_op import insert_user, get_user_by_email, user_exists  # Assuming these functions are in database_op.py
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
-# Read the payment database
-def read_database(file_name):
-    data_list = []
-    try:
-        with open(file_name, 'r') as file:
-            for line in file:
-                line_items = line.strip().split()
-                data_list.append(line_items)
-    except FileNotFoundError:
-        print("The file was not found.")
-    return data_list
+# Function to load payment data
+def load_payment_data():
+    conn = sqlite3.connect('payments.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT method, card_number, expiration, cvc, name, country, balance FROM payments")
+    payment_data = cursor.fetchall()
+    conn.close()
+    return payment_data
 
-payment_data = read_database("database.txt")
+# Load the payment data when the app starts
+payment_data = load_payment_data()
 
 # Function to validate card details
 def validate_payment(method, card_number, expiration, cvc, name, country):
@@ -76,11 +75,6 @@ def register():
     flash("Verification code sent.", "info")
     return resp
 
-# Root route to redirect to the registration page
-@app.route('/')
-def home():
-    return redirect(url_for('register'))
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -102,6 +96,11 @@ def login():
 
     return render_template('login.html')
 
+# Root route to redirect to the registration page
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
 # Forgot Password Route
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -117,6 +116,7 @@ def forgot_password():
     
     return render_template('forgot_password.html')
 
+'''
 # Flight Selection Route
 @app.route('/selection', methods=['GET', 'POST'])
 def selection():
@@ -133,6 +133,7 @@ def selection():
         return redirect(url_for('confirmed'))
 
     return render_template('selection.html', flights=flights)
+'''
 
 # Payment Form Route
 @app.route('/payment', methods=['GET'])
@@ -161,11 +162,13 @@ def process_payment():
         flash("Invalid payment details! Please try again.", 'error')
     return redirect(url_for('payment_form'))
 
+'''
 # Confirmation Route
 @app.route('/confirmed', methods=['GET'])
 def confirmed():
     selected_flight = session.get('selected_flight')
     return render_template('confirmed.html', flight=selected_flight)
+'''
 
 if __name__ == '__main__':
     app.run(debug=True)

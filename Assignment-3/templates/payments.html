@@ -64,12 +64,11 @@
             </select>
 			<br>
 
-            <button type="submit">Pay CAD $1244.13</button>
-			<br>
-			
-            <button type="button" class="cancel">Cancel</button>
-			<br>
+            <button type="submit">Pay CAD 1244.13</button>
         </form>
+		<form action="/cancel_payment" method="POST">
+            <button type="submit" class="cancel">Cancel</button>
+		</form>
     </div>
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
