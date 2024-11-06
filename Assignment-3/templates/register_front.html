@@ -39,7 +39,7 @@
         <!-- Link to login page LATER ON WHEN WE WORK ON BACKEND CONNECTIVITY-->
         <div class="container-log">
             <div class="clickable-text">
-                <a href="login">Already have an account? Log In </a>
+                <a href="/login">Already have an account? Log In </a>
             </div>
         </div>
     </div>
@@ -93,11 +93,11 @@
                 </div>
 
                 <label>
-                    <input type="checkbox" name="myCheckbox">
+                    <input type="checkbox" name="emailBox">
                     I would like to receive promotional emails and updates.
                 </label>
                 <label>
-                    <input type="checkbox" name="myCheckbox" required>
+                    <input type="checkbox" name="termsBox" required>
                     I have read and accepted the <a href="/">Terms and Conditions</a>.
                 </label>
                 
@@ -126,19 +126,5 @@
             }
         };
     </script>
-
-    <!-- Display flash messages on the registration page -->
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        <ul class="flash-message">
-            <!-- Loop through and display only registration error messages -->
-            {% for category, message in messages %}
-                {% if category == 'register_error' and category == "register_info"%}
-                    <li>{{ message }}</li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% endwith %}
 </body>
 </html>
