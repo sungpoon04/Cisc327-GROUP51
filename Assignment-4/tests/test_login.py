@@ -1,26 +1,22 @@
 import unittest
 from app import app
 from database_op import insert_user, delete_user
+import uuid
 
 class FlaskTestCase(unittest.TestCase):
 
     def setUp(self):
-        """Set up a test client and insert a unique user for each test."""
+        """Set up a test client with unique user data for isolation."""
         self.app = app.test_client()
         self.app.testing = True
-
-        # Insert a unique user with a unique email and phone number
-        try:
-            insert_user("unique_user@example.com", "0987654321", "password123", "Test", "User", "456 Unique St")
-        except Exception as e:
-            print("Error setting up test user:", e)
+        # Ensure user data is unique to avoid database locking issues
+        self.test_email = f"unique_{uuid.uuid4()}@example.com"
+        self.test_phone = f"123456{uuid.uuid4().int % 10000}"  # Ensure unique phone number
+        insert_user(self.test_email, self.test_phone, "password123", "Test", "User", "456 Unique St")
 
     def tearDown(self):
-        """Clean up by deleting the user after each test to avoid conflicts."""
-        try:
-            delete_user("unique_user@example.com")
-        except Exception as e:
-            print("Error tearing down test user:", e)
+        """Delete the test user after each test to maintain database integrity."""
+        delete_user(self.test_email)
 
     # Test if the login page loads successfully (GET request)
     def test_login_page_loads(self):
@@ -30,10 +26,9 @@ class FlaskTestCase(unittest.TestCase):
 
     # Test valid login (POST request)
     def test_valid_login(self):
-        response = self.app.post('/login', data=dict(email="unique_user@example.com", password="password123"), follow_redirects=True)
+        response = self.app.post('/login', data=dict(email=self.test_email, password="password123"), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
-        # Check for an element unique to the payment page to confirm redirection
-        self.assertIn(b'Name on card', response.data)  # Ensures the payment page is displayed
+        self.assertIn(b'Welcome to Flight Booker!', response.data)
 
     # Test invalid login (POST request)
     def test_invalid_login(self):
@@ -49,7 +44,7 @@ class FlaskTestCase(unittest.TestCase):
 
     # Test valid forgot password request (POST request)
     def test_valid_forgot_password(self):
-        response = self.app.post('/forgot-password', data=dict(email="unique_user@example.com"), follow_redirects=True)
+        response = self.app.post('/forgot-password', data=dict(email=self.test_email), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Instructions to reset your password have been sent', response.data)
 
@@ -59,5 +54,17 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'This email is not registered in our system.', response.data)
 
+    # Test the root route to ensure it loads the registration page successfully
+    def test_home_page_loads(self):
+        response = self.app.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Creating your account', response.data)
+
+    # Test cancel_payment route to ensure it redirects to the login page
+    def test_cancel_payment_redirects_to_login(self):
+        response = self.app.get('/cancel_payment', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'LOGIN TO FLIGHT BOOKER', response.data)
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()  # pragma: no cover
