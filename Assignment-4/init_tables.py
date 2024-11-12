@@ -31,4 +31,4 @@ def create_user():
     print("Table has been successfully created.")
 
 if __name__ == "__main__":
-    create_user()
+    create_user() # pragma: no cover
