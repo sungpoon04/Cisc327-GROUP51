@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <!-- The top row of the frontend -->
+        <div class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Illustration" class="logo-img">
+        </div>
+        <div class="logo-text">FLIGHT BOOKER</div>
+
+        <div class="nav-a">
+            <a href="/">Home</a>
+            <a href="/">About</a>
+            <a href="/">Contact</a>
+        </div>
+    </nav>
+	
+    <div class="payment-container">
+        <form action="/process_payment" method="POST">
+            <label for="email">Email</label>
+			<br>
+			
+            <input type="email" id="email" name="email" placeholder="Email" required>
+			<br>
+			
+            <label for="card_number">Card information</label>
+			<br>
+			
+            <select id="method" name="method" required>
+                <option value="">Select Payment Method</option>
+                <option value="debit">Debit</option>
+                <option value="credit">Credit</option>
+                <option value="visa">Visa</option>
+                <option value="master">Mastercard</option>
+			</select>
+			<br>
+			
+            <input type="tel" inputmode ="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19" id="card_number" name="card_number" placeholder="xxxx xxxx xxxx xxxx" required>
+			<br>
+            
+
+
+			<input type="text" id="expiration" name="expiration" maxlength="4" placeholder="MMYY" required>
+			<br>
+			
+			<input type="text" id="cvc" name="cvc" maxlength="3" placeholder="CVC" required>
+			<br>
+
+
+            <label for="name_on_card">Name on card</label>
+            <input type="text" id="name_on_card" name="name_on_card" placeholder="Name" required>
+			<br>
+
+            <label for="country">Country or region</label>
+            <select id="country" name="country" required>
+                <option value="">Country</option>
+                <option value="US">United States</option>
+                <option value="CA">Canada</option>
+            </select>
+			<br>
+
+            <button type="submit">Pay CAD $1244.13</button>
+        </form>
+		<!-- Cancel button form to redirect to the login page -->
+		<form action="/cancel_payment" method="GET">
+            <button type="submit" class="cancel">Cancel</button>
+		</form>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-message">
+        {% for category, message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+</body>
+</html>
