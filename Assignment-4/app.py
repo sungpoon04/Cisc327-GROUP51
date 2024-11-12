@@ -165,4 +165,4 @@ def confirmed():
     return render_template('confirmed.html', flight=selected_flight)
 '''
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) # pragma: no cover
