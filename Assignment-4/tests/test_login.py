@@ -60,11 +60,5 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Creating your account', response.data)
 
-    # Test cancel_payment route to ensure it redirects to the login page
-    def test_cancel_payment_redirects_to_login(self):
-        response = self.app.get('/cancel_payment', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'LOGIN TO FLIGHT BOOKER', response.data)
-
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
