@@ -89,4 +89,4 @@ class FlaskTestCase(unittest.TestCase):
             self.assertIn(b'Terms and Conditions not accepted', result.data)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main() # pragma: no cover
