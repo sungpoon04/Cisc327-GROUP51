@@ -86,4 +86,4 @@ if __name__ == "__main__":
     # Example usage
     # insert_user('alice@example.com', '1234567890', 'password123', 'Alice', 'Smith', '123 Main St')
     # print("All users:", get_all_users())
-    pass
+    pass # pragma: no cover
