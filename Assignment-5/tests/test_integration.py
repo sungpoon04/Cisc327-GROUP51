@@ -45,5 +45,36 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Payment of CAD $1244.13 successful!', response.data)
 
+    def test_cancel_payment_and_retrying(self):
+        # Step 1: Log in with correct credentials
+        response = self.client.post('/login', data=dict(email=self.test_email, password="password123"), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Welcome to Flight Booker!', response.data)
+        
+        # Step 2: Cancel payment and go back to the log in page
+        response = self.client.get('/cancel_payment')
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login', response.location)
+            
+        # Step 3: Log back in
+        response = self.client.post('/login', data=dict(email=self.test_email, password="password123"), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Welcome to Flight Booker!', response.data)
+        
+        # Step 4: Pay with a valid payment
+        response = self.client.post('/process_payment', data={
+            'email': 'test@example.com',
+            'method': 'debit',
+            'card_number': '1111111111111111',
+            'expiration': '0125',
+            'cvc': '001',
+            'name_on_card': 'johnsmith',
+            'country': 'CA'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Payment of CAD $1244.13 successful!', response.data)
+    
+    
+
 if __name__ == '__main__':
     unittest.main()
