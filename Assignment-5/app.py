@@ -30,8 +30,9 @@ def validate_payment(method, card_number, expiration, cvc, name, country):
             return float(record[6])  # Returns balance
     return None
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET','POST'])
 def register():
+    # Retrieve form data
     email = request.form.get('email')
     phone = request.form.get('phone')
     password = request.form.get('password')
@@ -42,18 +43,29 @@ def register():
     user_code = request.form.get('user-code')
     terms = request.form.get('termsBox')
 
-    # Retrieve verification code from cookies
-    verification_code = request.cookies.get('verification_code')
-
-    if not all([email, phone, password, confirm_password, first_name, last_name, home_address, terms]):
-        return "Missing essential information", 400
+    # Check if passwords match criteria
     if password != confirm_password:
-        return "Passwords do not match", 400
-    if user_code != verification_code:
-        return "Incorrect verification code.", 400
+        return 'Passwords do not match or are invalid.', 400
 
+    # Check for missing essential components
+    if (not first_name) or (not last_name) or (not home_address) or (not email):
+        return 'Missing essential information', 400
+    
+    # Check if terms and conditions were accepted
+    if not terms:
+        return 'Terms and Conditions not accepted', 400
+
+    # Check if verification code is correct (assuming the frontend generated code is passed correctly)
+    # Retrieve code from cookies
+    generated_code = request.cookies.get('verification_code') 
+    if user_code != generated_code:
+        return 'Incorrect verification code.', 400
+
+    # Insert user into the database
     insert_user(email, phone, password, first_name, last_name, home_address)
-    return "Registration successful!", 200
+
+    # Redirect to the login page after successful registration
+    return redirect(url_for('login'))  # Redirect to the login route
 
 
 # Root route to redirect to the registration page
