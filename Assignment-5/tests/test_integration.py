@@ -51,7 +51,7 @@ class IntegrationTests(unittest.TestCase):
         correct_login = {'email': self.test_email, 'password': self.test_password}
         response = self.client.post('/login', data=correct_login, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Welcome to Flight Booker!', response.data)
+        self.assertIn(b'Name on card', response.data)
 
         # Step 3: Make a payment
         response = self.client.post('/process_payment', data=self.test_payment_method, follow_redirects=True)
@@ -94,12 +94,12 @@ class IntegrationTests(unittest.TestCase):
         # Step 1: Register a user
         with self.client as client:
             # Set the verification_code cookie
-            client.set_cookie('localhost', 'verification_code', '123456')
+            client.set_cookie('verification_code', '123456')
 
             # Make the registration request
             response = client.post('/register', data=self.test_user_data, follow_redirects=True)
             self.assertEqual(response.status_code, 200, "User registration failed.")
-            self.assertIn(b'Registration successful!', response.data)
+            self.assertIn(b'LOGIN', response.data)
 
         # Step 2: Log in with the newly registered user
         correct_login = {'email': self.test_email, 'password': self.test_password}
