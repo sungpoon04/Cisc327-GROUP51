@@ -24,7 +24,7 @@ def extract_verification_code(alert_text):
 
 def test_successful_registration(driver, wait):
     print("\nRunning Test Case: Successful Registration")
-    driver.get("http://localhost:5000/")
+    driver.get("http://127.0.0.1:5000/")
     
     # Fill out the registration form with valid data
     unique_email = generate_unique_email()
@@ -65,7 +65,7 @@ def test_successful_registration(driver, wait):
     # Wait for the response and verify success message
     time.sleep(2)  # Adjust sleep time as needed
     # Wait for the redirect to the login page
-    expected_login_url = "http://localhost:5000/login/"
+    expected_login_url = "http://127.0.0.1:5000/login/"
     try:
         wait.until(EC.url_to_be(expected_login_url))
         current_url = driver.current_url
@@ -80,7 +80,7 @@ def test_successful_registration(driver, wait):
 
 def test_duplicate_email_registration(driver, wait):
     print("\nRunning Test Case: Duplicate Email Registration")
-    driver.get("http://localhost:5000/")
+    driver.get("http://127.0.0.1:5000/")
     
     # Use a fixed email to test duplicate registration
     duplicate_email = "duplicate@example.com"
@@ -122,7 +122,7 @@ def test_duplicate_email_registration(driver, wait):
     time.sleep(2)
     
     # Attempt Duplicate Registration
-    driver.get("http://localhost:5000/")
+    driver.get("http://127.0.0.1:5000/")
     print("Attempting to register with duplicate email.")
     
     driver.find_element(By.ID, "email").send_keys(duplicate_email)
@@ -166,7 +166,7 @@ def test_duplicate_email_registration(driver, wait):
 
 def test_password_mismatch(driver, wait):
     print("\nRunning Test Case: Password Mismatch")
-    driver.get("http://localhost:5000/")
+    driver.get("http://127.0.0.1:5000/")
     
     # Fill out the registration form with mismatched passwords
     unique_email = generate_unique_email()
@@ -211,7 +211,7 @@ def test_password_mismatch(driver, wait):
 
 def test_missing_required_fields(driver, wait):
     print("\nRunning Test Case: Missing Required Fields")
-    driver.get("http://localhost:5000/")
+    driver.get("http://127.0.0.1:5000/")
     
     # Fill out the registration form with missing email
     driver.find_element(By.ID, "email").send_keys("")  # Missing email
