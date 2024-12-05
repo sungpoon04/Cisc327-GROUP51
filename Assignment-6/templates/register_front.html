@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Booker - Registration</title>
+    <!-- link to the css file in static folder -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+    <nav>
+        <!-- The top row of the frontend -->
+        <div class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Illustration" class="logo-img">
+        </div>
+        <div class="logo-text">FLIGHT BOOKER</div>
+
+        <div class="nav-a">
+            <a href="/">Home</a>
+            <a href="/">About</a>
+            <a href="/">Contact</a>
+        </div>
+    </nav>
+
+
+<!-- Class used to divide the query section and image -->
+<div class="row">
+    <div class="column">
+        <div class="container-top">
+            Creating your account
+        </div>
+
+        <div class="logo-reg">
+            <img src="{{ url_for('static', filename='register_photo.jpg') }}" alt="Illustration" class="logo-reg">
+        </div>
+
+        <!-- Link to login page LATER ON WHEN WE WORK ON BACKEND CONNECTIVITY-->
+        <div class="container-log">
+            <div class="clickable-text">
+                <a href="/login">Already have an account? Log In </a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="column">
+        <div class="container">
+            <form id="registrationForm" action="/register" method="POST">
+                <!-- Step 1: Personal Information -->
+                <h3>Personal Information</h3>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" minlength="8" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required>
+                </div>
+    
+                <!-- Step 2: Account Information -->
+                <h3>Account Information</h3>
+                <div class="form-group">
+                    <label for="first-name">First Name *</label>
+                    <input type="text" id="first-name" name="first-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name *</label>
+                    <input type="text" id="last-name" name="last-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="home-address">Home Address *</label>
+                    <input type="text" id="home-address" name="home-address" required>
+                </div>
+    
+                <!-- Step 3: Verification -->
+                <h3>Verification
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span onclick="generateCode()" class="clickable-text">Generate Code</span>
+                </h3>
+                <div class="form-group">
+                    <label for="user-code">Verification Code *</label>
+                    <input type="text" id="user-code" name="user-code" required>
+                </div>
+
+                <label>
+                    <input type="checkbox" name="emailBox">
+                    I would like to receive promotional emails and updates.
+                </label>
+                <label>
+                    <input type="checkbox" name="termsBox" required>
+                    I have read and accepted the <a href="/">Terms and Conditions</a>.
+                </label>
+                
+
+                <button type="submit" id="registerButton" disabled>Register</button>
+            </form>
+        </div>
+    </div>
+  </div>
+
+    <script>
+        let verificationCode;
+
+        function generateCode() {
+            verificationCode = Math.floor(100000 + Math.random() * 900000);
+            document.cookie = `verification_code=${verificationCode}; path=/`;
+            alert("Your verification code is: " + verificationCode);
+            document.getElementById("registerButton").disabled = false;
+        }
+
+        document.getElementById("registrationForm").onsubmit = function(event) {
+            const userCode = document.getElementById("user-code").value;
+            if (userCode != verificationCode) {
+                alert("Verification code is incorrect!");
+                event.preventDefault();
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <!-- The top row of the frontend -->
+        <div class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Illustration" class="logo-img">
+        </div>
+        <div class="logo-text">FLIGHT BOOKER</div>
+
+        <div class="nav-a">
+            <a href="/">Home</a>
+            <a href="/">About</a>
+            <a href="/">Contact</a>
+        </div>
+    </nav>
+
+    <div class="confirmation-container">
+        <h2>Your ticket to Dubai (DXB) has been booked!</h2>
+        <p>Invoice number: 123456789</p>
+        
+        <div class="summary">
+            <h3>Flight Summary</h3>
+            <p>YYZ to DXB, 1 Stop<br>18h 12m<br>Wednesday, Oct 2, 2024<br>07:23 Local Time</p>
+
+            <h3>Seat Summary</h3>
+            <p>23A, Boeing 787</p>
+
+            <h3>Payment Summary</h3>
+            <p>Name: John Smith<br>Payment method: Visa<br>Card number: •••• •••• •••• 1234<br>Payment amount: CAD $1245.13<br>Payment date: Sep 30, 2024</p>
+        </div>
+
+        <div class="buttons">
+            <button>Make Changes</button>
+            <button>Save Confirmation</button>
+            <button>Finish</button>
+        </div>
+    </div>
+</body>
+</html>
