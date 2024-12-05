@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
 import random
 import sqlite3
+import re
 from database_op import insert_user, get_user_by_email, user_exists  # Assuming these functions are in database_op.py
 
 app = Flask(__name__)
@@ -30,9 +31,8 @@ def validate_payment(method, card_number, expiration, cvc, name, country):
             return float(record[6])  # Returns balance
     return None
 
-@app.route('/register', methods=['GET','POST'])
+@app.route('/register', methods=['POST'])
 def register():
-    # Retrieve form data
     email = request.form.get('email')
     phone = request.form.get('phone')
     password = request.form.get('password')
@@ -43,27 +43,32 @@ def register():
     user_code = request.form.get('user-code')
     terms = request.form.get('termsBox')
 
-    # Check if passwords match criteria
+    # Retrieve verification code from cookies
+    verification_code = request.cookies.get('verification_code')
+
+    # Check for missing fields
+    if not all([email, phone, password, confirm_password, first_name, last_name, home_address, terms]):
+        return "Missing essential information", 400
+
+    # Check for password mismatch
     if password != confirm_password:
-        return 'Passwords do not match or are invalid.', 400
+        return "Passwords do not match", 400
 
-    # Check for missing essential components
-    if (not first_name) or (not last_name) or (not home_address) or (not email):
-        return 'Missing essential information', 400
-    
-    # Check if terms and conditions were accepted
-    if not terms:
-        return 'Terms and Conditions not accepted', 400
+    # Check for verification code mismatch
+    if user_code != verification_code:
+        return "Incorrect verification code.", 400
 
-    # Check if verification code is correct (assuming the frontend generated code is passed correctly)
-    # Retrieve code from cookies
-    generated_code = request.cookies.get('verification_code') 
-    if user_code != generated_code:
-        return 'Incorrect verification code.', 400
+    # Validate email format
+    email_regex = r"[^@]+@[^@]+\.[^@]+"
+    if not re.match(email_regex, email):
+        return "Invalid email format.", 400
+
+    # Check if user already exists
+    if user_exists(email, phone):
+        return "Email or phone number already in use.", 400
 
     # Insert user into the database
     insert_user(email, phone, password, first_name, last_name, home_address)
-
     # Redirect to the login page after successful registration
     return redirect(url_for('login'))  # Redirect to the login route
 
